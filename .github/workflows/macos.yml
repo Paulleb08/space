@@ -1,15 +1,51 @@
 name: App macOS
 on:
   push:
-    paths: ["mac/**", ".github/workflows/macos.yml"]
+    paths: ["mac/**", "gmail/**", ".github/workflows/macos.yml"]
 jobs:
   build-test:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      - name: Test du script Gmail
+        run: node gmail/test.js
       - run: brew install xcodegen
       - run: xcodegen
         working-directory: mac
       - name: Tests
         working-directory: mac
         run: xcodebuild test -project Space.xcodeproj -scheme Space -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
+
+      # Ad-hoc signature ("-"): runs on any Mac (Intel + Apple Silicon) without an Apple developer account.
+      - name: Compilation Release
+        working-directory: mac
+        run: >
+          xcodebuild build -project Space.xcodeproj -scheme Space -configuration Release
+          -destination 'generic/platform=macOS' -derivedDataPath build
+          CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=
+      - name: Signature, .zip et .dmg
+        working-directory: mac
+        run: |
+          APP=build/Build/Products/Release/Space.app
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          lipo -archs "$APP/Contents/MacOS/Space"
+          ditto -c -k --keepParent "$APP" Space.app.zip
+          mkdir dmg && cp -R "$APP" dmg/ && ln -s /Applications dmg/Applications
+          hdiutil create -volname Space -srcfolder dmg -ov -format UDZO Space.dmg
+      - name: Lancement de l'app et capture d'écran
+        working-directory: mac
+        run: |
+          cp -R build/Build/Products/Release/Space.app /Applications/
+          open /Applications/Space.app
+          sleep 10
+          pgrep -x Space   # fails the job if the app crashed at launch
+          screencapture -x capture.png || true
+          pluginkit -m -v -p com.apple.widgetkit-extension | grep -i space || echo "widget non listé par pluginkit"
+          pkill -x Space
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Space
+          path: |
+            mac/Space.dmg
+            mac/Space.app.zip
+            mac/capture.png

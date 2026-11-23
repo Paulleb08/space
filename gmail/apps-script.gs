@@ -25,7 +25,7 @@ function analyserMails() {
 
 function detecter(m) {
   const today = Utilities.formatDate(new Date(), 'Europe/Paris', 'yyyy-MM-dd');
-  const res = appel('https://api.anthropic.com/v1/messages', {
+  return lireTaches(appel('https://api.anthropic.com/v1/messages', {
     'x-api-key': prop('CLAUDE_KEY'),
     'anthropic-version': '2023-06-01',
     'anthropic-beta': 'server-side-fallback-2026-07-01',
@@ -45,11 +45,15 @@ function detecter(m) {
       'avec un titre court (ex. "Rendre TP réseau", "Réviser partiel de maths") et l\'échéance AAAA-MM-JJ ("" si inconnue). ' +
       'Ignore les newsletters, publicités, notifications et tout ce qui n\'est pas un travail ou une évaluation. Liste vide si rien.',
     messages: [{ role: 'user', content: 'De : ' + m.getFrom() + '\nDate : ' + m.getDate() + '\nSujet : ' + m.getSubject() + '\n\n' + m.getPlainBody().slice(0, 8000) }],
-  });
+  }));
+}
+
+// Model output is untrusted: keep non-empty titles and well-formed dates only.
+function lireTaches(res) {
   if (res.stop_reason !== 'end_turn') return [];
-  const texte = res.content.filter(function (b) { return b.type === 'text'; })[0].text;
-  // Model output is untrusted: keep non-empty titles and well-formed dates only.
-  return JSON.parse(texte).taches
+  const bloc = res.content.filter(function (b) { return b.type === 'text'; })[0];
+  if (!bloc) return [];
+  return JSON.parse(bloc.text).taches
     .filter(function (t) { return typeof t.titre === 'string' && t.titre.trim(); })
     .map(function (t) { return { titre: t.titre.trim().slice(0, 200), echeance: /^\d{4}-\d{2}-\d{2}$/.test(t.echeance) ? t.echeance : null }; });
 }
