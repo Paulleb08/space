@@ -1,0 +1,64 @@
+# Génère Space.xcodeproj :  brew install xcodegen && xcodegen
+name: Space
+options:
+  bundleIdPrefix: com.space
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""   # ton équipe Apple (Xcode > Signing & Capabilities), nécessaire pour le widget
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+targets:
+  Space:
+    type: application
+    platform: macOS
+    sources: [Space, Shared]
+    info:
+      path: Space/Info.plist
+      properties:
+        CFBundleDisplayName: Space
+        LSApplicationCategoryType: public.app-category.productivity
+        AppGroup: $(TeamIdentifierPrefix)space
+    entitlements:
+      path: Space/Space.entitlements
+      properties:
+        com.apple.security.application-groups: [$(TeamIdentifierPrefix)space]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.space.app
+    dependencies:
+      - target: SpaceWidget
+  SpaceWidget:
+    type: app-extension
+    platform: macOS
+    sources: [SpaceWidget, Shared]
+    info:
+      path: SpaceWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Space
+        AppGroup: $(TeamIdentifierPrefix)space
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: SpaceWidget/SpaceWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups: [$(TeamIdentifierPrefix)space]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.space.app.widget
+  SpaceTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [SpaceTests, Shared]
+schemes:
+  Space:
+    build:
+      targets:
+        Space: all
+    test:
+      targets: [SpaceTests]

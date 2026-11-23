@@ -1,62 +1,66 @@
-# Space — mes notes, devoirs, courses et projets
+# Space — appli macOS pour tes devoirs, courses et projets
 
-Site web + appli téléphone (PWA, à installer sur l'écran d'accueil) branchés sur **Notion** :
+Une vraie appli Mac (SwiftUI), au look épuré façon Notion, branchée sur **ta base Notion** :
 
 - 📚 **Devoirs** : devoirs à rendre et évaluations à réviser
 - 🛒 **Courses / pense-bête** : la vie de tous les jours, hors travail
 - 🚀 **Projets**, séparés en 💼 **Pro** et 🏡 **Perso**
-- ⏰ **À venir** : tout ce qui a une échéance, du plus urgent au moins urgent (c'est aussi ce que montre le widget)
+- ⏰ **À venir** : tout ce qui a une échéance, du plus urgent au moins urgent
+- 🪐 **Barre des menus** : le nombre de choses en retard, du jour ou du lendemain, et la liste des prochaines échéances
+- **Widget** macOS (bureau et Centre de notifications) : tes prochaines échéances
 
-**Claude range tout seul** chaque note sans catégorie, que tu l'écrives dans l'appli ou directement dans Notion sur ton téléphone. Il repère aussi l'échéance (« vendredi », « demain »…). Tu peux aussi choisir la catégorie toi-même à l'ajout, ou déplacer une note avec son menu. Sans clé Claude, les notes arrivent dans 📥 *À trier* et tu les ranges à la main.
+**Claude range tout seul** chaque note sans catégorie, que tu l'écrives dans l'appli ou dans Notion sur ton téléphone (rangée au prochain rafraîchissement, toutes les 15 min). Il repère aussi la date (« vendredi », « demain »…). Tu peux aussi choisir la catégorie toi-même à l'ajout, ou cliquer sur la pastille d'une note pour la déplacer. Sans clé Claude, les notes arrivent dans 📥 *À trier*.
 
-**Gmail** : un script analyse tes nouveaux mails toutes les heures et ajoute automatiquement les devoirs à rendre et les évaluations à réviser (préfixe 📧).
+**Gmail** : un script Google (`gmail/apps-script.gs`) lit tes nouveaux mails toutes les heures, même Mac éteint, et ajoute les devoirs et évaluations dans Notion (préfixe 📧).
 
-## Installation (≈ 15 min, tout est gratuit sauf l'usage de l'API Claude, quelques centimes)
+Pas de serveur : l'appli parle directement à Notion et à Claude, et tes clés restent dans le **Trousseau** de ton Mac.
 
-### 1. Notion
-1. Va sur <https://www.notion.so/my-integrations> → **Nouvelle intégration** → copie le *secret* (`NOTION_TOKEN`).
-2. Crée une page Notion vide « Space », puis **⋯ → Connexions → ajoute ton intégration**.
-3. Copie l'identifiant de la page (les 32 caractères à la fin de son URL), puis lance :
-   ```bash
-   npm install
-   NOTION_TOKEN=secret_xxx npm run setup-notion -- <id-de-la-page>
-   ```
-   Le script crée la base « Space — mes notes » et affiche `NOTION_DATABASE_ID`.
-4. Sur ton téléphone, dans l'appli Notion, ajoute la base en favori : tu y écris tes notes (juste le **Nom** suffit, Claude remplit le reste).
+## Installation
 
-### 2. Clé Claude (facultatif mais recommandé)
-Crée une clé sur <https://console.anthropic.com> → `ANTHROPIC_API_KEY`.
-
-### 3. Mise en ligne sur Vercel
-1. Importe ce dépôt GitHub sur <https://vercel.com/new> (aucun réglage de build).
-2. Dans **Settings → Environment Variables**, ajoute :
-   | Variable | Valeur |
+### 1. La base Notion (5 min)
+1. <https://www.notion.so/my-integrations> → **Nouvelle intégration** → copie le *secret*.
+2. Dans Notion, crée une **base de données** (pleine page) avec exactement ces propriétés :
+   | Nom | Type |
    |---|---|
-   | `NOTION_TOKEN` | secret de l'intégration |
-   | `NOTION_DATABASE_ID` | affiché à l'étape 1 |
-   | `ANTHROPIC_API_KEY` | ta clé Claude |
-   | `APP_TOKEN` | un mot de passe long que tu inventes (il protège ton site) |
-3. Ouvre le site et entre ton `APP_TOKEN` quand il est demandé.
+   | `Nom` | Titre (renomme la colonne « Name » / « Nom » existante) |
+   | `Categorie` | Sélection |
+   | `Echeance` | Date |
+   | `Fait` | Case à cocher |
+   Sans accents : c'est voulu. Les options de `Categorie` se créent toutes seules.
+3. Sur la base : **⋯ → Connexions → ajoute ton intégration**.
+4. Sur ton téléphone, mets cette base en favori dans l'appli Notion : tu y écris tes notes, le **Nom** suffit.
 
-### 4. L'appli sur ton téléphone
-- **iPhone** : ouvre le site dans Safari → Partager → **Sur l'écran d'accueil**.
-- **Android** : ouvre le site dans Chrome → ⋮ → **Installer l'application**.
+### 2. L'appli Mac (10 min, il faut Xcode)
+```bash
+brew install xcodegen
+```
+```bash
+cd mac && xcodegen && open Space.xcodeproj
+```
+Dans Xcode : cible **Space** puis **SpaceWidget** → *Signing & Capabilities* → choisis ton équipe (un compte Apple gratuit suffit). Ensuite **⌘R**.
+Pour la garder hors d'Xcode : *Product → Archive → Distribute App → Copy App*, puis glisse `Space.app` dans **Applications**.
 
-### 5. Le widget « prochaines échéances »
-- **iPhone** : installe l'appli gratuite **Scriptable**, crée un script, colle `widget/space-widget.js` en renseignant `URL_SITE` et `TOKEN`. Ensuite, appui long sur l'écran d'accueil → **+** → Scriptable → choisis le script. Le widget se met à jour toutes les 30 minutes environ, et un appui ouvre le site.
-- **Android** : avec une appli de widget web (par ex. *Web Widget*), affiche `https://ton-site.vercel.app/?widget&token=TON_APP_TOKEN`. C'est une vue compacte des 5 prochaines échéances.
+Au premier lancement, **⌘,** (Réglages) : colle le secret Notion, le lien de ta base et ta clé Claude (<https://console.anthropic.com>, facultatif).
 
-### 6. Analyse automatique de Gmail
-1. Va sur <https://script.google.com> → **Nouveau projet**, colle `gmail/apps-script.gs`.
-2. **Paramètres du projet → Propriétés du script** : `SPACE_URL` = l'adresse de ton site, `APP_TOKEN` = ton jeton.
-3. Sélectionne la fonction `installer` → **Exécuter**, puis accepte l'accès Gmail.
-Les mails des 3 derniers jours (hors Promotions et Réseaux sociaux) sont analysés toutes les heures, puis reçoivent le libellé `Space/analysé` pour ne pas être traités deux fois. Pour ne cibler que ton école, ajoute par exemple `from:@mon-ecole.fr` dans `RECHERCHE`.
+Pour qu'elle se lance seule : *Réglages Système → Général → Ouverture* → ajoute Space.
+
+### 3. Le widget
+Clic droit sur le bureau → **Modifier les widgets** → cherche **Space**. Le widget affiche ce que l'appli a chargé en dernier : laisse l'appli tourner dans la barre des menus pour qu'il reste à jour.
+
+### 4. Analyse automatique de Gmail
+1. <https://script.google.com> → **Nouveau projet**, colle `gmail/apps-script.gs`.
+2. **Paramètres du projet → Propriétés du script** : `CLAUDE_KEY`, `NOTION_TOKEN`, `NOTION_DATABASE_ID` (les 32 caractères de l'ID de ta base).
+3. Sélectionne `installer` → **Exécuter**, accepte l'accès Gmail.
+
+Il traite 5 mails récents par heure (hors Promotions et Réseaux sociaux) et leur met le libellé `Space/analysé`. Pour ne viser que ton école, ajoute `from:@mon-ecole.fr` dans `RECHERCHE`.
 
 > Confidentialité : le contenu de ces mails est envoyé à l'API Claude pour l'analyse.
 
+### Bonus : widget iPhone
+Appli gratuite **Scriptable** → nouveau script → colle `widget/space-widget.js` (avec ton secret Notion et l'ID de la base) → ajoute un widget Scriptable.
+
 ## Développement
-```bash
-npm test          # tests (Notion simulé, aucun appel réseau)
-npx vercel dev    # site + API en local, avec les variables dans .env
-```
-Structure : `public/` (PWA), `api/items.js` (lire, ajouter, ranger, cocher), `api/mail.js` (analyse des mails), `lib/` (Notion, Claude, jeton).
+- `mac/Shared/` : modèle, Notion, Claude (utilisés par l'appli, le widget et les tests)
+- `mac/Space/` : l'appli (fenêtre, barre des menus, réglages, Trousseau)
+- `mac/SpaceWidget/` : le widget
+- `mac/SpaceTests/` : tests (`xcodebuild test -scheme Space`, aussi lancés par GitHub Actions sur Mac à chaque push)

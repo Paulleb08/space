@@ -1,0 +1,6 @@
+Space.xcodeproj/
+Space/Info.plist
+Space/Space.entitlements
+SpaceWidget/Info.plist
+SpaceWidget/SpaceWidget.entitlements
+build/
