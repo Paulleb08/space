@@ -115,6 +115,7 @@ struct AjoutView: View {
             if await store.ajouter(String(t.prefix(2000)), categorie: categorie, echeance: avecDate ? date : nil) {
                 texte = ""
                 avecDate = false
+                categorie = nil
             }
         }
     }
@@ -145,8 +146,6 @@ struct LigneView: View {
                 ForEach(Categorie.allCases) { c in
                     Button(c.label) { Task { await store.deplacer(item, vers: c) } }
                 }
-                Divider()
-                Button("📥 À trier") { Task { await store.deplacer(item, vers: nil) } }
             } label: {
                 Text(item.categorie?.label ?? "📥 À trier").font(.caption)
             }
@@ -154,6 +153,7 @@ struct LigneView: View {
             .padding(.horizontal, 6).padding(.vertical, 1)
             .background(couleur(item.categorie).opacity(0.18), in: RoundedRectangle(cornerRadius: 4))
         }
+        .disabled(store.occupe) // a refresh in progress would overwrite the change
         .padding(.vertical, 7).padding(.horizontal, 4)
         .background(survol ? Color.primary.opacity(0.04) : .clear, in: RoundedRectangle(cornerRadius: 4))
         .overlay(alignment: .bottom) { Divider() }

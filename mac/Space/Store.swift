@@ -30,7 +30,9 @@ final class Store: ObservableObject {
     }
 
     func rafraichir() async {
+        guard !occupe else { return } // one refresh at a time: a second one would re-sort the same notes
         guard let notion else { statut = "Renseigne Notion dans Réglages (⌘,)."; return }
+        statut = ""
         occupe = true
         defer { occupe = false }
         do {
@@ -51,7 +53,6 @@ final class Store: ObservableObject {
                 }
             }
             items = liste
-            if statut.hasPrefix("Renseigne") || statut.hasPrefix("Notion") { statut = "" }
             SharedCache.save(liste)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {

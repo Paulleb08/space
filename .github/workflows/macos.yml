@@ -13,6 +13,3 @@ jobs:
       - name: Tests
         working-directory: mac
         run: xcodebuild test -project Space.xcodeproj -scheme Space -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
-      - name: Compilation de l'app et du widget
-        working-directory: mac
-        run: xcodebuild build -project Space.xcodeproj -scheme Space -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
