@@ -58,8 +58,8 @@ function render() {
   $('#list').innerHTML = list.map((i) => `
     <li data-id="${i.id}">
       <input type="checkbox" aria-label="Fait">
-      <div><div class="titre">${esc(i.titre)}</div><div class="meta">${tab === 'avenir' && i.categorie ? CATS[i.categorie] + ' · ' : ''}${dateLabel(i.echeance)}</div></div>
-      <select aria-label="Déplacer">${['', ...Object.keys(CATS)].map((c) => `<option value="${c}" ${c === (i.categorie ?? '') ? 'selected' : ''}>${c ? CATS[c] : '📥 À trier'}</option>`).join('')}</select>
+      <div><div class="titre">${esc(i.titre)}</div><div class="meta">${dateLabel(i.echeance)}</div></div>
+      <select aria-label="Déplacer" data-cat="${i.categorie ?? ''}">${['', ...Object.keys(CATS)].map((c) => `<option value="${c}" ${c === (i.categorie ?? '') ? 'selected' : ''}>${c ? CATS[c] : '📥 À trier'}</option>`).join('')}</select>
     </li>`).join('');
   status(list.length ? '' : tab === 'avenir' ? 'Rien de prévu 🎉' : 'Vide.');
 }

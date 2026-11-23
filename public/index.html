@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Space</title>
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
@@ -13,17 +14,21 @@
 </head>
 <body>
   <header>
-    <h1>Space</h1>
-    <button id="refresh" aria-label="Rafraîchir">↻</button>
+    <div class="icon" aria-hidden="true">🪐</div>
+    <div class="title-row">
+      <h1>Space</h1>
+      <button id="refresh" class="ghost" aria-label="Rafraîchir">↻</button>
+    </div>
+    <p class="subtitle">Devoirs, courses et projets — rangés pour toi.</p>
   </header>
 
   <form id="add">
-    <input id="texte" placeholder="Une note : « rendre DM de physique vendredi », « lait, œufs »…" required maxlength="2000" autocomplete="off">
+    <input id="texte" placeholder="+ Nouvelle note… « rendre DM de physique vendredi »" required maxlength="2000" autocomplete="off">
     <div class="row">
       <select id="categorie" aria-label="Catégorie">
-        <option value="">🤖 Auto (Claude)</option>
+        <option value="">✨ Auto</option>
         <option>Devoir</option>
-        <option value="Courses">Courses / pense-bête</option>
+        <option value="Courses">Courses</option>
         <option>Projet pro</option>
         <option>Projet perso</option>
       </select>
