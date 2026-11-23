@@ -30,7 +30,12 @@ Pas de serveur : l'appli parle directement à Notion et à Claude, et tes clés 
 3. Sur la base : **⋯ → Connexions → ajoute ton intégration**.
 4. Sur ton téléphone, mets cette base en favori dans l'appli Notion : tu y écris tes notes, le **Nom** suffit.
 
-### 2. L'appli Mac (10 min, il faut Xcode)
+### 2. L'appli Mac
+
+**Le plus simple : le .dmg.** Ouvre `Space.dmg` (fourni à chaque compilation dans l'onglet *Actions* de GitHub, artefact « Space ») et glisse **Space** dans **Applications**.
+L'appli n'est pas signée par un compte développeur Apple payant : au premier lancement, fais **clic droit → Ouvrir → Ouvrir**. Si macOS refuse quand même : *Réglages Système → Confidentialité et sécurité → Ouvrir quand même*.
+
+**Ou depuis le code (il faut Xcode) :**
 ```bash
 brew install xcodegen
 ```
