@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Space</title>
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Space</h1>
+    <button id="refresh" aria-label="Rafraîchir">↻</button>
+  </header>
+
+  <form id="add">
+    <input id="texte" placeholder="Une note : « rendre DM de physique vendredi », « lait, œufs »…" required maxlength="2000" autocomplete="off">
+    <div class="row">
+      <select id="categorie" aria-label="Catégorie">
+        <option value="">🤖 Auto (Claude)</option>
+        <option>Devoir</option>
+        <option value="Courses">Courses / pense-bête</option>
+        <option>Projet pro</option>
+        <option>Projet perso</option>
+      </select>
+      <input id="echeance" type="date" aria-label="Échéance (facultatif)">
+      <button>Ajouter</button>
+    </div>
+  </form>
+
+  <nav id="tabs" role="tablist">
+    <button data-tab="avenir" role="tab">⏰ À venir</button>
+    <button data-tab="Devoir" role="tab">📚 Devoirs</button>
+    <button data-tab="Courses" role="tab">🛒 Courses</button>
+    <button data-tab="Projets" role="tab">🚀 Projets</button>
+    <button data-tab="trier" role="tab" hidden>📥 À trier <span id="nb-trier"></span></button>
+  </nav>
+  <div id="sous-projets" hidden>
+    <label><input type="radio" name="proj" value="Projet pro" checked> 💼 Pro</label>
+    <label><input type="radio" name="proj" value="Projet perso"> 🏡 Perso</label>
+  </div>
+
+  <p id="status" role="status"></p>
+  <ul id="list"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>

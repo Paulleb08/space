@@ -1,0 +1,13 @@
+{
+  "name": "space",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "setup-notion": "node scripts/setup-notion.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.12.0"
+  }
+}

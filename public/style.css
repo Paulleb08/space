@@ -1,0 +1,28 @@
+:root { --bg:#f7f7fb; --card:#fff; --fg:#1c1c28; --muted:#6b6b80; --accent:#4f46e5; --late:#dc2626; --soon:#d97706; --border:#e4e4ee; }
+@media (prefers-color-scheme: dark) { :root { --bg:#111118; --card:#1c1c26; --fg:#ececf4; --muted:#9a9ab0; --accent:#818cf8; --late:#f87171; --soon:#fbbf24; --border:#2c2c3a; } }
+* { box-sizing: border-box; }
+[hidden] { display:none !important; }
+body { margin:0 auto; max-width:640px; padding:16px; padding-top:max(16px, env(safe-area-inset-top)); background:var(--bg); color:var(--fg); font:16px/1.4 system-ui, -apple-system, sans-serif; }
+header { display:flex; justify-content:space-between; align-items:center; }
+h1 { margin:0 0 12px; font-size:1.6rem; }
+button, input, select { font:inherit; color:inherit; }
+button { cursor:pointer; border:0; border-radius:10px; padding:8px 12px; background:var(--accent); color:#fff; }
+#refresh { background:transparent; color:var(--fg); font-size:1.3rem; }
+#add { display:grid; gap:8px; margin-bottom:12px; }
+#add input, #add select { width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); }
+.row { display:grid; grid-template-columns: 1fr 1fr auto; gap:8px; }
+#tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+#tabs button { flex:none; background:var(--card); color:var(--fg); border:1px solid var(--border); }
+#tabs button[aria-selected="true"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+#sous-projets { display:flex; gap:16px; margin:10px 4px 0; }
+#status { color:var(--muted); min-height:1.2em; margin:8px 4px; }
+#list { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+li { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
+li input[type=checkbox] { width:22px; height:22px; accent-color:var(--accent); }
+.titre { overflow-wrap:anywhere; }
+.meta { font-size:.8rem; color:var(--muted); }
+.late { color:var(--late); font-weight:600; } .soon { color:var(--soon); font-weight:600; }
+li select { max-width:120px; padding:4px; border:1px solid var(--border); border-radius:8px; background:var(--card); font-size:.85rem; }
+/* ?widget : vue compacte pour les applis de widget web (Android) */
+body.widget { padding:8px; } body.widget :is(header, #add, #tabs, #sous-projets, li select, li input) { display:none; }
+body.widget li { grid-template-columns:1fr; padding:6px 10px; }

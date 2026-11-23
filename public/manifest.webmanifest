@@ -1,0 +1,10 @@
+{
+  "name": "Space — mes notes",
+  "short_name": "Space",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7fb",
+  "theme_color": "#4f46e5",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }],
+  "shortcuts": [{ "name": "À venir", "url": "/?widget" }]
+}
